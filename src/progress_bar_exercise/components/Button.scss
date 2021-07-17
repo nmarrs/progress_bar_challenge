@@ -1,0 +1,27 @@
+@import "../../shared_styles/colors.scss";
+
+.Button {
+  .button {
+    border: 1px solid;
+    border-radius: 25px;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 210px;
+    margin-right: 25px;
+    margin-left: 25px;
+    letter-spacing: 0.1em;
+  }
+  .button:hover {
+    border-width: 2px;
+  }
+  .button:active {
+    border-width: 3px;
+  }
+  .start-button {
+    color: $green;
+  }
+  .finish-button {
+    color: $red;
+  }
+}

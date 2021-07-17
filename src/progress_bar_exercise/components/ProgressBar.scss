@@ -1,0 +1,29 @@
+@import "../../shared_styles/colors.scss";
+
+.ProgressBar {
+  .progress-bar {
+    height: 6px;
+    width: 100%;
+    border-radius: 25px;
+    background: $gray-lighter;
+  }
+  .progress-bar-progress {
+    height: 100%;
+    background: linear-gradient(to right, $sunrise 0%, $sunset 50%, $red 100%);
+    border-radius: inherit;
+  }
+  .hide-progress-bar {
+    animation: hideProgressBar 3s forwards;
+  }
+  @keyframes hideProgressBar {
+    0% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
