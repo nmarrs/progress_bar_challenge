@@ -29,4 +29,14 @@ describe("ProgressBar", () => {
 
     expect(progressBarProgress).toHaveStyle("transition: width 1s");
   });
+
+  it("hides progress bar when progress percentage is 100", () => {
+    const {getByTestId} = render(
+      <ProgressBar currentProgressPercentage={100} />,
+    );
+
+    const progressBarContainer = getByTestId("progress-bar-container");
+
+    expect(progressBarContainer).toHaveClass("hide-progress-bar");
+  });
 });
