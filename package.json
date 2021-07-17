@@ -6,6 +6,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:nowatch": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -30,10 +31,10 @@
   },
   "lint-staged": {
     "src/**/*.{js,json,scss,md}": [
-     "prettier --write"
-   ],
+      "prettier --write"
+    ],
     "*.js": [
-      "jest --bail --findRelatedTests"
+      "yarn test:nowatch --bail --findRelatedTests"
     ]
   },
   "eslintConfig": {

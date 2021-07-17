@@ -1,0 +1,11 @@
+.ProgressBarController {
+  .progress-bar-layout-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .progress-bar-button-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+  }
+}

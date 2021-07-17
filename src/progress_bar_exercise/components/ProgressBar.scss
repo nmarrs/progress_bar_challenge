@@ -1,0 +1,16 @@
+@import "../../shared_styles/colors.scss";
+
+.ProgressBar {
+  .progress-bar {
+    height: 6px;
+    width: 100%;
+    border-radius: 25px;
+    background: $gray-lighter;
+  }
+  .progress-bar-progress {
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(to right, $sunrise 0%, $sunset 50%, $red 100%);
+    border-radius: inherit;
+  }
+}

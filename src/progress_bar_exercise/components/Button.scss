@@ -1,0 +1,21 @@
+@import "../../shared_styles/colors.scss";
+
+.Button {
+  .button {
+    border: 1px solid;
+    border-radius: 25px;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 450;
+    width: 180px;
+    margin-right: 25px;
+    margin-left: 25px;
+    color: $green;
+  }
+  .button:hover {
+    border-width: 2px;
+  }
+  .button:active {
+    border-width: 3px;
+  }
+}
