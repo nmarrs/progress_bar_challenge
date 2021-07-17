@@ -12,8 +12,16 @@ const ProgressBarController = () => {
       <div className="progress-bar-layout-container">
         <ProgressBar />
         <div className="progress-bar-button-container">
-          <Button />
-          <Button />
+          <Button
+            title="START REQUEST"
+            buttonType="start-button"
+            onClick={() => {}}
+          />
+          <Button
+            title="FINISH REQUEST"
+            buttonType="finish-button"
+            onClick={() => {}}
+          />
         </div>
       </div>
     </div>
