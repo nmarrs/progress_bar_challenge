@@ -4,8 +4,15 @@ import PropTypes from "prop-types";
 import "./ProgressBar.scss";
 
 const ProgressBar = ({currentProgressPercentage}) => {
+  const progressBarTransition =
+    currentProgressPercentage === 90
+      ? "width 15s"
+      : currentProgressPercentage === 100
+      ? "width 1s"
+      : "";
   const progressBarProgressStyle = {
     width: `${currentProgressPercentage}%`,
+    transition: progressBarTransition,
   };
 
   return (

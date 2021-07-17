@@ -19,4 +19,14 @@ describe("ProgressBar", () => {
 
     expect(progressBarProgress).toHaveStyle("width: 50%");
   });
+
+  it("adds quick transition when progress percentage is 100", () => {
+    const {getByTestId} = render(
+      <ProgressBar currentProgressPercentage={100} />,
+    );
+
+    const progressBarProgress = getByTestId("progress-bar-progress");
+
+    expect(progressBarProgress).toHaveStyle("transition: width 1s");
+  });
 });
