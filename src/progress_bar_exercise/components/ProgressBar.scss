@@ -13,7 +13,7 @@
     border-radius: inherit;
   }
   .hide-progress-bar {
-    animation: hideProgressBar 3s forwards;
+    animation: hideProgressBar 3s 1s forwards;
   }
   @keyframes hideProgressBar {
     0% {
