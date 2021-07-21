@@ -1,38 +1,107 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled, {keyframes, css} from "styled-components";
 
+import {generateCustomWidthKeyframe} from "../../utils";
 import "./ProgressBar.scss";
 
-/*
+const PROGRESS_ANIMATION_INCOMPLETE_HANG_WIDTH_PERCENT_VALUE = 90;
+const PROGRESS_ANIMATION_COMPLETE_WIDTH_PERCENT_VALUE = 100;
+const PROGRESS_INCOMPLETE_HANG_TIME_IN_SECONDS = 15;
+const PROGRESS_ANIMATION_COMPLETE_WIDTH_PERCENT_OFFSET = 1;
 
-Ran out of time to address implementing custom animation using passed in breakpoints.
+// TODO: Consider breaking this out into a separate file
+const ProgressBarProgress = styled.div`
+  animation: ${({
+    currentProgressPercentage,
+    progressAnimationBreakpoints,
+    shouldProgressAnimationUseBreakpoints,
+    currentElapsedTimeInSeconds,
+  }) => {
+    if (!shouldProgressAnimationUseBreakpoints) {
+      return;
+    } else if (
+      currentProgressPercentage ===
+      PROGRESS_ANIMATION_INCOMPLETE_HANG_WIDTH_PERCENT_VALUE
+    ) {
+      return css`
+        ${generateCustomWidthKeyframe(
+          progressAnimationBreakpoints,
+        )} ${PROGRESS_INCOMPLETE_HANG_TIME_IN_SECONDS}s ease-in-out
+      `;
+    } else if (
+      currentProgressPercentage ===
+      PROGRESS_ANIMATION_COMPLETE_WIDTH_PERCENT_VALUE
+    ) {
+      const sanitizedCurrentElapsedTimeInSeconds =
+        currentElapsedTimeInSeconds <= PROGRESS_INCOMPLETE_HANG_TIME_IN_SECONDS
+          ? currentElapsedTimeInSeconds
+          : PROGRESS_INCOMPLETE_HANG_TIME_IN_SECONDS;
 
-If I had more time I would work on this by first figuring out if I can make my current solution
-support this functionality (via CSS transitions API). Perhaps via using a useEffect or something. If not, I would then try and
-look into other possible solutions, including CSS key frames and investigating / trying out third party animation libraries.
+      const approximateCurrentWidthValue =
+        PROGRESS_ANIMATION_COMPLETE_WIDTH_PERCENT_OFFSET +
+        Math.ceil(
+          (sanitizedCurrentElapsedTimeInSeconds /
+            PROGRESS_INCOMPLETE_HANG_TIME_IN_SECONDS) *
+            PROGRESS_ANIMATION_INCOMPLETE_HANG_WIDTH_PERCENT_VALUE,
+        );
 
-If all else failed, I would reach out to another co-worker to take a look / pair with to get unblocked.
+      const completeProgressLoadAnimation = keyframes`
+        0% {
+          width: ${approximateCurrentWidthValue}%;
+        }
+        100% {
+          width: 100%;
+        }
+      `;
 
-*/
+      return css`
+        ${completeProgressLoadAnimation} 1s
+      `;
+    }
+  }};
+`;
 
 const ProgressBar = ({
   currentProgressPercentage,
   shouldAutoHideOnComplete,
   shouldProgressAnimationUseBreakpoints,
   progressAnimationBreakpoints,
+  currentElapsedTimeInSeconds,
 }) => {
+  // Overall O(n lg n), filter O(n), sort O(n lg n) n = number of breakpoints
+  const sanitizedProgressAnimationBreakpoints = progressAnimationBreakpoints
+    .filter(
+      (progressAnimationBreakpoint) =>
+        progressAnimationBreakpoint > 0 &&
+        progressAnimationBreakpoint <=
+          PROGRESS_ANIMATION_INCOMPLETE_HANG_WIDTH_PERCENT_VALUE,
+    )
+    .sort();
+
   const progressBarTransition =
-    currentProgressPercentage === 90
-      ? "width 15s"
-      : currentProgressPercentage === 100
+    currentProgressPercentage ===
+    PROGRESS_ANIMATION_INCOMPLETE_HANG_WIDTH_PERCENT_VALUE
+      ? `width ${PROGRESS_INCOMPLETE_HANG_TIME_IN_SECONDS}s`
+      : currentProgressPercentage ===
+        PROGRESS_ANIMATION_COMPLETE_WIDTH_PERCENT_VALUE
       ? "width 1s"
       : "";
+
+  const isProgressBarNormalAnimationOverride =
+    !shouldProgressAnimationUseBreakpoints ||
+    sanitizedProgressAnimationBreakpoints.length < 1;
+
   const progressBarProgressStyle = {
     width: `${currentProgressPercentage}%`,
-    transition: progressBarTransition,
+    ...(isProgressBarNormalAnimationOverride && {
+      transition: progressBarTransition,
+    }),
   };
 
-  const isComplete = currentProgressPercentage >= 100;
+  const isComplete =
+    currentProgressPercentage >=
+    PROGRESS_ANIMATION_COMPLETE_WIDTH_PERCENT_VALUE;
   const isAutoHideOnComplete = isComplete && shouldAutoHideOnComplete;
 
   return (
@@ -42,10 +111,17 @@ const ProgressBar = ({
         className={`progress-bar ${
           isAutoHideOnComplete && "hide-progress-bar"
         }`}>
-        <div
+        <ProgressBarProgress
           data-testid="progress-bar-progress"
           className="progress-bar-progress"
-          style={progressBarProgressStyle}></div>
+          style={progressBarProgressStyle}
+          currentProgressPercentage={currentProgressPercentage}
+          progressAnimationBreakpoints={sanitizedProgressAnimationBreakpoints}
+          shouldProgressAnimationUseBreakpoints={
+            shouldProgressAnimationUseBreakpoints
+          }
+          currentElapsedTimeInSeconds={currentElapsedTimeInSeconds}
+        />
       </div>
     </div>
   );
@@ -56,6 +132,7 @@ ProgressBar.defaultProps = {
   shouldAutoHideOnComplete: true,
   shouldProgressAnimationUseBreakpoints: false,
   progressAnimationBreakpoints: [],
+  currentElapsedTimeInSeconds: 0,
 };
 
 ProgressBar.propTypes = {
@@ -63,6 +140,7 @@ ProgressBar.propTypes = {
   shouldAutoHideOnComplete: PropTypes.bool,
   shouldProgressAnimationUseBreakpoints: PropTypes.bool,
   progressAnimationBreakpoints: PropTypes.arrayOf(PropTypes.number),
+  currentElapsedTimeInSeconds: PropTypes.number,
 };
 
 export default ProgressBar;
